@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include <GLFW\glfw3.h>
 #include <Eigen\Dense>
 
@@ -39,16 +40,6 @@ namespace spline {
 		void drawSpline(Eigen::VectorXd x, Eigen::MatrixXd coeff);
 	}
 
-	/*
-	namespace parametric1 {
-		void setPointCoord(Eigen::VectorXd x, Eigen::VectorXd y);
-		void setDifferenceH(double interval_t = 1);
-		void cubicFunction(double t, double tk, int line, double& x, double& y);
-		void calculeCoefficients();
-		void drawSplines();
-		void parametricSpline(Eigen::VectorXd x_, Eigen::VectorXd y_);
-	}
-	*/
 
 	namespace parametric {
 		void setPointCoord(Eigen::VectorXd x, Eigen::VectorXd y);
