@@ -19,6 +19,26 @@ void setCoordenates(double xCoord, double yCoord) {
 }
 
 
+void deleteLastPoint() {
+	x.conservativeResize(x.size() - 1);
+	y.conservativeResize(y.size() - 1);
+}
+
+static void mouseClick(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		double xmouse, ymouse;
+		glfwGetCursorPos(window, &xmouse, &ymouse);
+		setCoordenates(xmouse, ymouse);
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		deleteLastPoint();
+	}
+}
+
+
 int main() {
 
 	glfwInit();
