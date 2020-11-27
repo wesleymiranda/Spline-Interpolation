@@ -71,5 +71,21 @@ namespace spline {
 				coefficients.row(i) = coeff.segment(i * 3, 3);
 			}
 		}
+
+		void setMatrixA(Eigen::VectorXd x, Eigen::MatrixXd& out) {
+			out = Eigen::MatrixXd::Zero(3 * N, 3 * N);
+
+			for (uint64_t n = 0; n < N; n++) {
+
+				out.block<1, 3>(2 * n, 3 * n) << x(n) * x(n), x(n), 1;
+				out.block<1, 3>(2 * n + 1, 3 * n) << x(n + 1) * x(n + 1), x(n + 1), 1;
+			}
+
+			for (uint64_t n = 0; n < N - 1; n++)
+				out.block<1, 6>(2 * N + n, 3 * n) << 2 * x(n + 1), 1, 0, -2 * x(n + 1), -1, 0;
+
+			out(3 * N - 1, 0) = 1;
+
+		}
 	}
 }
