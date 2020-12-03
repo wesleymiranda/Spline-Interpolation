@@ -87,5 +87,36 @@ namespace spline {
 			out(3 * N - 1, 0) = 1;
 
 		}
+
+		void setVectorB(Eigen::VectorXd y, Eigen::VectorXd& out) {
+			out = Eigen::VectorXd::Zero(3 * N);
+
+			for (uint64_t i = 0; i < N; i++)
+				out.segment(2 * i, 2) << y(i), y(i + 1);
+		}
+
+		void solveEquations(Eigen::MatrixXd A, Eigen::VectorXd& X, Eigen::VectorXd B) {
+			if (A.rows() != B.size())
+				std::cout << "A matriz de A e o vetor B não devem ter quantidade de linhas diferentes";
+
+			X = A.colPivHouseholderQr().solve(B);
+		}
+
+		void quadraticSpline(Eigen::VectorXd x, Eigen::VectorXd y) {
+
+			if (x.size() < 3) return;
+
+			if (x.size() != y.size())
+				std::cout << "O tamanho de X e Y devem ser iguais" << std::endl;
+
+
+			setPointCoord(x, y);
+			setMatrixA(xCoord, A);
+			setVectorB(yCoord, B);
+			solveEquations(A, X, B);
+			setCoefficients(X);
+			drawSpline(xCoord, coefficients);
+
+		}
 	}
 }
