@@ -118,5 +118,35 @@ namespace spline {
 			drawSpline(xCoord, coefficients);
 
 		}
+
+		double quadFunction(double x, double a, double b, double c) {
+			return x * x * a + x * b + c;
+		}
+
+		void drawSpline(Eigen::VectorXd x, Eigen::MatrixXd coeff) {
+
+			glColor3f(0.f, 1.f, 0.f);
+			glLineWidth(2.0f);
+
+			int sections = 100;
+			double increment;
+			double xa, xb;
+
+			for (uint64_t i = 0; i < N; i++) {
+
+				xa = x(i);
+				xb = x(i + 1);
+				increment = (double)(xb - xa) / sections;
+
+				double num = xa;
+
+				glBegin(GL_LINE_STRIP);
+				for (int j = 0; j <= sections; j++) {
+					glVertex3f(num, (float)quadFunction(num, coeff(i, 0), coeff(i, 1), coeff(i, 2)), 0.f);
+					num += increment;
+				}
+				glEnd();
+			}
+		}
 	}
 }
