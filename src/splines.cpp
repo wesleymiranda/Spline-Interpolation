@@ -149,4 +149,29 @@ namespace spline {
 			}
 		}
 	}
+
+	namespace cubic {
+
+		uint64_t N;							//Número de equações
+		Eigen::VectorXd xCoord, yCoord;		// Coordenadas x e y dos pontos de entrada
+		Eigen::MatrixXd A;					// AX=B
+		Eigen::VectorXd X, B;				// AX=B
+		Eigen::VectorXd h;					// h é o vetor que contém "X(i) - X(i-i)"
+
+		Eigen::MatrixXd coefficients;		// Coeficientes dos polinômios
+
+		void setPointCoord(Eigen::VectorXd x, Eigen::VectorXd y) {
+			N = x.size() - 1;
+			xCoord = x;
+			yCoord = y;
+		}
+
+		void setDifferenceH(Eigen::VectorXd& x, Eigen::VectorXd& out) {
+			out = Eigen::VectorXd::Zero(N);
+
+			for (uint64_t i = 0; i < N; i++)
+				out(i) = (x(i + 1) - x(i));
+		}
+	}
+
 }
