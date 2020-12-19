@@ -172,6 +172,38 @@ namespace spline {
 			for (uint64_t i = 0; i < N; i++)
 				out(i) = (x(i + 1) - x(i));
 		}
+
+		void setMatrixA(Eigen::VectorXd h, Eigen::MatrixXd& out) {
+			out = Eigen::MatrixXd::Zero(N - 1, N - 1);
+
+			out.block<1, 2>(0, 0) << 2 * (h(0) + h(1)), h(1);
+
+			for (uint64_t i = 1; i < N - 2; i++)
+				out.block<1, 3>(i, i - 1) << h(i), 2 * (h(i) + h(i + 1)), h(i + 1);
+
+			out.block<1, 2>(N - 2, N - 3) << h(N - 2), 2 * (h(N - 2) + h(N - 1));
+		}
+
+		void setVectorB(Eigen::VectorXd h, Eigen::VectorXd y, Eigen::VectorXd& out) {
+			out = Eigen::VectorXd::Zero(N - 1);
+
+			for (uint64_t i = 0; i < N - 1; i++)
+				out(i) = (y(i + 2) - y(i + 1)) / h(i + 1) - (y(i + 1) - y(i)) / h(i);
+
+			out *= 6;
+		}
+
+		void setCoefficients(Eigen::VectorXd h, Eigen::VectorXd y, Eigen::VectorXd X, Eigen::MatrixXd& coeff) {
+			coeff = Eigen::MatrixXd::Zero(N, 4);
+
+			for (uint64_t i = 0; i < N; i++) {
+				coeff(i, 0) = (X(i + 1) - X(i)) / (6 * h(i));
+				coeff(i, 1) = X(i + 1) / 2;
+				coeff(i, 2) = (y(i + 1) - y(i)) / (h(i)) + h(i) * (2 * X(i + 1) + X(i)) / 6;
+				coeff(i, 3) = y(i + 1);
+			}
+
+		}
 	}
 
 }
