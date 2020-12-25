@@ -204,6 +204,32 @@ namespace spline {
 			}
 
 		}
+
+		void solveEquations(Eigen::MatrixXd A, Eigen::VectorXd& X, Eigen::VectorXd B) {
+			X = Eigen::VectorXd::Zero(N + 1);
+
+			if (A.rows() != B.size())
+				std::cout << "A matriz de A e o vetor B não devem ter quantidade de linhas diferentes";
+
+			X.segment(1, N - 1) = A.colPivHouseholderQr().solve(B);
+		}
+
+		void cubicSpline(Eigen::VectorXd x, Eigen::VectorXd y) {
+
+			if (x.size() < 4) return;
+
+			if (xCoord.size() != yCoord.size())
+				std::cout << "O tamanho dos vetores X e Y devem ser iguais" << std::endl;
+
+			setPointCoord(x, y);
+			setDifferenceH(xCoord, h);
+			setMatrixA(h, A);
+			setVectorB(h, yCoord, B);
+			solveEquations(A, X, B);
+			setCoefficients(h, y, X, coefficients);
+			drawSpline(xCoord, coefficients);
+		}
+
 	}
 
 }
