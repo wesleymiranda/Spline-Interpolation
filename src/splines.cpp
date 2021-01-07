@@ -230,6 +230,38 @@ namespace spline {
 			drawSpline(xCoord, coefficients);
 		}
 
+		double cubicFunction(double x, double xk, double a, double b, double c, double d) {
+			return pow(x - xk, 3) * a + pow(x - xk, 2) * b + (x - xk) * c + d;
+		}
+
+		void drawSpline(Eigen::VectorXd x, Eigen::MatrixXd coeff) {
+
+			glColor3f(1.f, 0.f, 0.f);
+			glLineWidth(2.0f);
+
+			int sections = 40;
+			double increment;
+			double xa, xb;
+
+			for (uint64_t i = 0; i < x.size() - 1; i++) {
+
+				xa = x(i);
+				xb = x(i + 1);
+				increment = (xb - xa) / sections;
+
+				double num = xa;
+				for (int j = 0; j < sections; j++) {
+
+					glBegin(GL_LINES);
+					glVertex3f(num, cubicFunction(num, xb, coeff(i, 0), coeff(i, 1), coeff(i, 2), coeff(i, 3)), 0.f);
+					glVertex3f(num + increment, cubicFunction(num + increment, xb, coeff(i, 0), coeff(i, 1), coeff(i, 2), coeff(i, 3)), 0.f);
+					glEnd();
+
+					num += increment;
+				}
+			}
+		}
+
 	}
 
 }
