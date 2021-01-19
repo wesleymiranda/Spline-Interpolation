@@ -264,4 +264,42 @@ namespace spline {
 
 	}
 
+	namespace parametric {
+		//A(0) = 0; B(0) = 0
+		uint64_t N;							//Número de equações
+		Eigen::VectorXd x, y;				// Coordenadas x e y dos pontos de entrada
+		Eigen::MatrixXd A;					// AX=B
+		Eigen::VectorXd X_x, X_y, B_x, B_y;				// AX=B
+		Eigen::VectorXd h;					// h é o vetor que contém "t(i) - t(i-1)"
+
+		Eigen::MatrixXd xCoefficients, yCoefficients;		// Coeficientes dos polinômios
+
+
+		void setPointCoord(Eigen::VectorXd x_, Eigen::VectorXd y_) {
+			N = x_.size() - 1;
+			x = x_;
+			y = y_;
+		}
+
+		void setDifferenceH(double interval_t) {
+			//Considerando igualmente espaçado, tal que:
+			//t(i) = i/N onde (i = 0, 1, 2, 3, ..., N)
+			// Deste modo 0 < t < 1 sempre será verdadeiro, e "t(i) - t(i-1)" = 1
+
+			h = Eigen::VectorXd::Constant(N, 1, interval_t);
+		}
+
+		void setMatrixA() {
+			A = Eigen::MatrixXd::Zero(N - 1, N - 1);
+
+			for (int i = 0; i < N - 1; i++) {
+				if (i > 0) A(i, i - 1) = h(i);
+				A(i, i) = 2 * (h(i + 1) + h(i));
+				if (i < N - 2) A(i, i + 1) = h(i + 1);
+			}
+		}
+
+
+	}
+
 }
