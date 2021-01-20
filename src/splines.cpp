@@ -300,6 +300,31 @@ namespace spline {
 		}
 
 
+		void setVectorB() {
+			B_x = Eigen::VectorXd::Zero(N - 1);
+			B_y = Eigen::VectorXd::Zero(N - 1);
+
+			for (uint64_t i = 1; i < N; i++) {
+				B_x(i - 1) = (x(i + 1) - x(i)) / h(i) - (x(i) - x(i - 1)) / h(i - 1);
+				B_y(i - 1) = (y(i + 1) - y(i)) / h(i) - (y(i) - y(i - 1)) / h(i - 1);
+			}
+
+
+			B_x *= 6;
+			B_y *= 6;
+
+		}
+
+		void solveEquations() {
+			X_x = Eigen::VectorXd::Zero(N + 1);
+			X_y = Eigen::VectorXd::Zero(N + 1);
+
+			if (A.rows() != B_x.size())
+				std::cout << "A matriz de A e o vetor B não devem ter quantidade de linhas diferentes";
+
+			X_x.segment(1, N - 1) = A.colPivHouseholderQr().solve(B_x);
+			X_y.segment(1, N - 1) = A.colPivHouseholderQr().solve(B_y);
+		}
 	}
 
 }
