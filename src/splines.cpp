@@ -325,6 +325,35 @@ namespace spline {
 			X_x.segment(1, N - 1) = A.colPivHouseholderQr().solve(B_x);
 			X_y.segment(1, N - 1) = A.colPivHouseholderQr().solve(B_y);
 		}
+
+		void cubicFunction(double t, double tk, int line, double& x, double& y) {
+			x = pow(t - tk, 3) * xCoefficients(line, 0) + pow(t - tk, 2) * xCoefficients(line, 1) + (t - tk) * xCoefficients(line, 2) + xCoefficients(line, 3);
+			y = pow(t - tk, 3) * yCoefficients(line, 0) + pow(t - tk, 2) * yCoefficients(line, 1) + (t - tk) * yCoefficients(line, 2) + yCoefficients(line, 3);
+		}
+
+		void calculeCoefficients() {
+
+			xCoefficients = Eigen::MatrixXd::Zero(N, 4);
+			yCoefficients = Eigen::MatrixXd::Zero(N, 4);
+
+
+
+			for (int i = 1; i <= N; i++) {
+				xCoefficients(i - 1, 0) = (X_x(i) - X_x(i - 1)) / (6 * h(i - 1));
+				yCoefficients(i - 1, 0) = (X_y(i) - X_y(i - 1)) / (6 * h(i - 1));
+
+				xCoefficients(i - 1, 1) = (X_x(i)) / 2;
+				yCoefficients(i - 1, 1) = (X_y(i)) / 2;
+
+				xCoefficients(i - 1, 2) = (x(i) - x(i - 1)) / h(i - 1) + h(i - 1) * (2 * X_x(i) + X_x(i - 1)) / 6;
+				yCoefficients(i - 1, 2) = (y(i) - y(i - 1)) / h(i - 1) + h(i - 1) * (2 * X_y(i) + X_y(i - 1)) / 6;
+
+				xCoefficients(i - 1, 3) = x(i);
+				yCoefficients(i - 1, 3) = y(i);
+			}
+
+		}
+
 	}
 
 }
