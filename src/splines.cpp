@@ -354,6 +354,48 @@ namespace spline {
 
 		}
 
+		void drawSplines() {
+
+			glColor3f(1.f, 0.f, 1.f);
+			glLineWidth(2.0f);
+
+			int sections = 20;
+
+			for (uint64_t i = 0; i < N; i++) {
+
+				double tk = (double)(i + 1) / N;
+				double t = (double)i / N;
+				double coord_x, coord_y;
+				double increment = h(i) / sections;
+
+				glBegin(GL_LINE_STRIP);
+				for (int j = 0; j <= sections; j++) {
+					cubicFunction(t, tk, i, coord_x, coord_y);
+					glVertex3f(coord_x, coord_y, 0.0f);
+					t += increment;
+				}
+				glEnd();
+
+			}
+		}
+
+		void parametricSpline(Eigen::VectorXd x_, Eigen::VectorXd y_) {
+
+			if (x_.size() < 3) return;
+			if (x_.size() != y_.size()) {
+				std::cout << "O tamanho dos vetores X e Y devem ser iguais" << std::endl;
+				return;
+			}
+
+			setPointCoord(x_, y_);
+			setDifferenceH((double)1 / N);
+			setMatrixA();
+			setVectorB();
+			solveEquations();
+			calculeCoefficients();
+			drawSplines();
+		}
+
 	}
 
 }
